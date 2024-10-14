@@ -1,7 +1,8 @@
 FlipClockFramework
 
-<img src="https://github.com/user-attachments/assets/cd160e63-36bf-40f3-a346-9fa3449a6520" alt="Description" width="450" height="250"/>
-<img src="https://github.com/user-attachments/assets/18f6b631-4066-47dd-ab4e-560dd21a5a86" alt="Description" width="250" height="450"/>
+
+https://github.com/user-attachments/assets/a55dd463-d1d3-4e2e-af39-449407ae120a  
+
 
 A customizable flip clock framework for iOS applications. Easily add animated flip clocks to your app with a few lines of code. Supports UIKit and allows color and font customization.
 
