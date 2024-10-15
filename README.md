@@ -21,7 +21,7 @@ Swift Package Manager (SPM)
 3.	Paste the following URL into the search bar:
 
 ```
-https://github.com/your-username/FlipClockFramework.git
+https://github.com/OmerErbalta/FlipClock_Swift
  ```
 
 
