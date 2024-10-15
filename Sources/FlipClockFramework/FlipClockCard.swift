@@ -1,6 +1,6 @@
 //
 //  FlipClockCard.swift
-//  
+//
 //
 //  Created by OmerErbalta on 13.10.2024.
 //
@@ -65,7 +65,7 @@ class FlipClockCardView: UIView {
     weak var delegate: FlipClockCardViewDelegate?
 
     // MARK: - Initializers
-    init(clockType: ClockType, backgroundColor: UIColor, textColor: UIColor, font: UIFont) {
+    init(clockType: ClockType, backgroundColor: UIColor, textColor: UIColor, font: UIFont,value:Int) {
         self.clockType = clockType
         self.color = backgroundColor
         self.textColor = textColor
@@ -76,7 +76,8 @@ class FlipClockCardView: UIView {
             clockType: clockType,
             backgroundColor: backgroundColor,
             textColor: textColor,
-            font: font
+            font: font,
+            value: value
         )
 
         self.downRectangle = ClockRectangle(
@@ -84,7 +85,8 @@ class FlipClockCardView: UIView {
             clockType: clockType,
             backgroundColor: backgroundColor,
             textColor: textColor,
-            font: font
+            font: font,
+            value: value
         )
 
         self.upRectangleNextValue = ClockRectangle(
@@ -92,7 +94,8 @@ class FlipClockCardView: UIView {
             clockType: clockType,
             backgroundColor: backgroundColor,
             textColor: textColor,
-            font: font
+            font: font,
+            value: value
         )
         self.upRectangleNextValue.isHidden = true
 

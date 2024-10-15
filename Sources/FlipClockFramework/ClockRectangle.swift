@@ -61,13 +61,16 @@ class ClockRectangle: UIView {
          clockType: ClockType,
          backgroundColor: UIColor,
          textColor: UIColor,
-         font: UIFont) {
+         font: UIFont,
+         value:Int
+    ) {
 
         self.rectangleType = type
         self.clockType = clockType
         self.color = backgroundColor
         self.textColor = textColor
         self.font = font
+        self.value = value
 
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -90,6 +93,8 @@ class ClockRectangle: UIView {
             return (currentValue + 1) % 60
         case .countdown:
             return (currentValue == 0) ? 59 : currentValue - 1
+        case .countup(to: let to):
+            return (currentValue + 1) % 60
         }
     }
 

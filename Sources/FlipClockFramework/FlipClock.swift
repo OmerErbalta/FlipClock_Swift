@@ -1,6 +1,4 @@
-//
 //  FlipClock.swift
-//  
 //
 //  Created by OmerErbalta on 13.10.2024.
 //
@@ -9,33 +7,26 @@
 import UIKit
 #endif
 
+// MARK: - Delegate Protocol
+public protocol FlipClockViewDelegate: AnyObject {
+    func countDidFinish()
+}
+
 public enum ClockType: Equatable {
     case clock
-    case countdown(minutes:Int)
+    case countdown(minutes: Int)
+    case countup(to: Int)
 }
 
 open class FlipClockView: UIView {
     
     // MARK: - Properties
     private var timer: Timer?
-    private var seconds: Int = 0 {
+    private var seconds: Int {
         didSet { updateFlipClockCards() }
     }
-   
-    open var clockType: ClockType = .clock {
-        didSet {
-            hourCard.clockType = clockType
-            minuteCard.clockType = clockType
-            secondCard.clockType = clockType
-            
-            if case .countdown(let minutes) = clockType {
-                seconds = minutes * 60
-            } else {
-                seconds = 0
-            }
-            startTimer()
-        }
-    }
+    
+    public let clockType: ClockType
 
     open var color: UIColor = UIColor.fromFramework(named: "primarry") ?? .black {
         didSet {
@@ -45,7 +36,7 @@ open class FlipClockView: UIView {
         }
     }
 
-    open var textColor: UIColor =  UIColor.fromFramework(named: "secondry") ?? .white  {
+    open var textColor: UIColor = UIColor.fromFramework(named: "secondry") ?? .white {
         didSet {
             hourCard.textColor = textColor
             minuteCard.textColor = textColor
@@ -53,7 +44,7 @@ open class FlipClockView: UIView {
         }
     }
 
-   open var font: UIFont = UIFont.systemFont(ofSize: 60, weight: .semibold) {
+    open var font: UIFont = UIFont.systemFont(ofSize: 60, weight: .semibold) {
         didSet {
             hourCard.font = font
             minuteCard.font = font
@@ -69,37 +60,63 @@ open class FlipClockView: UIView {
     private let minuteCard: FlipClockCardView
     private let secondCard: FlipClockCardView
 
+    // MARK: - Delegate
+    public weak var delegate: FlipClockViewDelegate?
+
     // MARK: - Initializers
     public init(
-        clockType: ClockType? = nil,
+        clockType: ClockType,
         color: UIColor? = nil,
         textColor: UIColor? = nil,
         font: UIFont? = nil
     ) {
-        self.clockType = clockType ?? self.clockType
+        self.clockType = clockType
         self.color = color ?? self.color
         self.textColor = textColor ?? self.textColor
         self.font = font ?? self.font
+
+        switch clockType {
+        case .countdown(let minutes):
+            self.seconds = minutes * 60
+        case .countup(let targetMinutes):
+            self.seconds = 0
+            self.previousSeconds = targetMinutes * 60
+        case .clock:
+            let now = Date()
+            self.seconds = Calendar.current.component(.hour, from: now) * 3600 +
+                           Calendar.current.component(.minute, from: now) * 60 +
+                           Calendar.current.component(.second, from: now)
+        }
+
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let secs = seconds % 60
+        self.previousHours = hours
+        self.previousMinutes = minutes
+        self.previousSeconds = secs
 
         hourCard = FlipClockCardView(
             clockType: self.clockType,
             backgroundColor: self.color,
             textColor: self.textColor,
-            font: self.font
+            font: self.font,
+            value: hours
         )
         minuteCard = FlipClockCardView(
             clockType: self.clockType,
             backgroundColor: self.color,
             textColor: self.textColor,
-            font: self.font
+            font: self.font,
+            value: minutes
         )
         secondCard = FlipClockCardView(
             clockType: self.clockType,
             backgroundColor: self.color,
             textColor: self.textColor,
-            font: self.font
+            font: self.font,
+            value: secs
         )
-
+        
         super.init(frame: .zero)
         setupView()
         startTimer()
@@ -108,7 +125,7 @@ open class FlipClockView: UIView {
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setup Methods
     private func setupView() {
         let stackView = UIStackView(arrangedSubviews: [hourCard, minuteCard, secondCard])
@@ -142,16 +159,19 @@ open class FlipClockView: UIView {
             if seconds <= 0 {
                 seconds = 0
                 timer?.invalidate()
+                delegate?.countDidFinish()
+            }
+        case .countup(let targetMinutes):
+            if seconds < targetMinutes * 60 {
+                seconds += 1
+            } else {
+                timer?.invalidate()
+                delegate?.countDidFinish()
             }
         }
     }
 
     // MARK: - Update Methods
-    
-    private func updateColorMode() {
-        
-    }
-    
     private func updateFlipClockCards() {
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
