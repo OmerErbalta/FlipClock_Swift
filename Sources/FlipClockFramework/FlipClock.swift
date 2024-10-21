@@ -17,6 +17,7 @@ public enum ClockType: Equatable {
     case countdown(minutes: Int)
     case countup(to: Int)
 }
+
 public enum StartType:Equatable {
     case autoStart
     case start
