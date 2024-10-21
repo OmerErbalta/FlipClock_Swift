@@ -11,6 +11,7 @@ Features
 •	🕰️ Beautiful flip clock animation.
 •	🎨 Customizable colors and fonts.
 •	📱 Easy integration with Swift Package Manager.
+•	🔄 Start/Stop Toggle Support with toggleStartType() function.
 
 Installation
 
@@ -77,3 +78,24 @@ clock.color = .blue  // Background color
 clock.textColor = .yellow  // Text color
 clock.font = UIFont.systemFont(ofSize: 48, weight: .medium)  // Font
 ```
+
+🕹️ Toggle Start/Stop Functionality
+
+You can start or stop the clock dynamically using the toggleStartType() function:
+
+```
+clock.toggleStartType() // Start and Stop
+```
+Start Type Options:
+
+	.autoStart: The clock starts automatically.
+	.start: Requires manual start.
+	.stop: The clock stops and can be restarted manually.
+ 
+ Example usage:
+ ```
+clock.startType = .start  // Starts the clock
+clock.startType = .stop   // Stops the clock
+ ```
+
+ 
