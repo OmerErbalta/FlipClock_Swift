@@ -100,6 +100,7 @@ class ClockRectangle: UIView {
 
     private func configureLabels() {
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         valueLabel.textAlignment = .center
         valueLabel.backgroundColor = .clear
         valueLabel.font = self.font
