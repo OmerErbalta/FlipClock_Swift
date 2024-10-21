@@ -37,6 +37,7 @@ class FlipClockCardView: UIView {
             updateSize()
         }
     }
+    
     var color: UIColor {
         didSet {
             updateRectangleColors()
