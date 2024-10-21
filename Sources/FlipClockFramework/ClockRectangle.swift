@@ -93,7 +93,7 @@ class ClockRectangle: UIView {
             return (currentValue + 1) % 60
         case .countdown:
             return (currentValue == 0) ? 59 : currentValue - 1
-        case .countup(to: let to):
+        case .countup:
             return (currentValue + 1) % 60
         }
     }

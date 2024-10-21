@@ -17,15 +17,32 @@ public enum ClockType: Equatable {
     case countdown(minutes: Int)
     case countup(to: Int)
 }
+public enum StartType:Equatable {
+    case autoStart
+    case start
+    case stop
+}
 
 open class FlipClockView: UIView {
-    
+
     // MARK: - Properties
     private var timer: Timer?
+    open var startType: StartType {
+        didSet {
+            switch startType {
+            case .start:
+                startTimer()
+            case .stop:
+                stopTimer()
+            case .autoStart:
+                startTimer()
+            }
+        }
+    }
     private var seconds: Int {
         didSet { updateFlipClockCards() }
     }
-    
+
     public let clockType: ClockType
 
     open var color: UIColor = UIColor.fromFramework(named: "primarry") ?? .black {
@@ -60,7 +77,6 @@ open class FlipClockView: UIView {
     private let minuteCard: FlipClockCardView
     private let secondCard: FlipClockCardView
 
-    // MARK: - Delegate
     public weak var delegate: FlipClockViewDelegate?
 
     // MARK: - Initializers
@@ -68,12 +84,14 @@ open class FlipClockView: UIView {
         clockType: ClockType,
         color: UIColor? = nil,
         textColor: UIColor? = nil,
-        font: UIFont? = nil
+        font: UIFont? = nil,
+        startType: StartType? = nil
     ) {
         self.clockType = clockType
         self.color = color ?? self.color
         self.textColor = textColor ?? self.textColor
         self.font = font ?? self.font
+        self.startType = startType ?? .autoStart
 
         switch clockType {
         case .countdown(let minutes):
@@ -118,12 +136,25 @@ open class FlipClockView: UIView {
         )
         
         super.init(frame: .zero)
+        if self.startType != .stop {
+            startTimer()
+        }
         setupView()
-        startTimer()
+       
     }
 
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    //MARK: - Public Methods
+    public func toogleTimer() {
+        if self.startType == .start {
+            self.startType = .stop
+        }
+        else {
+            self.startType = .start
+        }
     }
 
     // MARK: - Setup Methods
@@ -150,6 +181,12 @@ open class FlipClockView: UIView {
         }
     }
 
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    // MARK: - Update Methods
     private func updateSeconds() {
         switch clockType {
         case .clock:
@@ -158,20 +195,19 @@ open class FlipClockView: UIView {
             seconds -= 1
             if seconds <= 0 {
                 seconds = 0
-                timer?.invalidate()
+                stopTimer()
                 delegate?.countDidFinish()
             }
         case .countup(let targetMinutes):
             if seconds < targetMinutes * 60 {
                 seconds += 1
             } else {
-                timer?.invalidate()
+                stopTimer()
                 delegate?.countDidFinish()
             }
         }
     }
 
-    // MARK: - Update Methods
     private func updateFlipClockCards() {
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
@@ -201,6 +237,6 @@ open class FlipClockView: UIView {
     }
 
     deinit {
-        timer?.invalidate()
+        stopTimer()
     }
 }
