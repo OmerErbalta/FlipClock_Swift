@@ -21,7 +21,7 @@ Swift Package Manager (SPM)
 3.	Paste the following URL into the search bar:
 
 ```
-https://github.com/your-username/FlipClockFramework.git
+https://github.com/OmerErbalta/FlipClock_Swift
  ```
 
 
@@ -35,7 +35,7 @@ Here’s how to integrate **FlipClockView** into your view controller:
 import UIKit
 import FlipClockFramework
 
-class ViewController: UIViewController {
+class ViewController: UIViewController,FlipClockViewDelegate {
 
     private let flipClockView: FlipClockView = {
         let clock = FlipClockView(clockType: .clock)
@@ -48,6 +48,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(flipClockView)
+        flipClockView.delegate = self
         setupConstraints()
     }
 
@@ -59,6 +60,11 @@ class ViewController: UIViewController {
             flipClockView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
             flipClockView.heightAnchor.constraint(equalToConstant: 200)
         ])
+    }
+
+ // FlipClockViewDelegate method
+    func countDidFinish() {
+        print("finish")
     }
 }
 ```
